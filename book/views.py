@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
+
 from book import models, forms
 
 def book_all(request):
@@ -30,9 +31,13 @@ def book_update(request, id):
         form = forms.BookForm(instance=book_object, data=request.POST)
         if form.is_valid():
             form.save()
-            return redirect(reverse("books:book_all"))
+            return HttpResponse('Book Updated Successfully')
+            #return redirect(reverse("books:book_all"))
     else:
         form = forms.BookForm(instance=book_object)
-    return render(request, 'show_update.html', {'form': form, 'object': book_object})
+    return render(request, 'book_update.html', {'form': form, 'object': book_object})
 
-
+def book_delete(request, id):
+    book_object = get_object_or_404(models.Book, id=id)
+    book_object.delete()
+    return HttpResponse('Book Deleted')
